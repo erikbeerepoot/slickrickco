@@ -1,26 +1,25 @@
 language: ruby
 rvm:
 - 2.2.2
-
-
-# Assume bundler is being used, therefore
-# the `install` step will run `bundle install` by default.
-
+addons:
+  ssh_known_hosts:
+  - "$WEB_SERVER"
 script:
 - bundle exec jekyll build -d _site/ed
 - bundle exec htmlproofer ./_site --only-4xx --check-favicon --check-html
-
-
-# branch whitelist, only for GitHub Pages
 branches:
   only:
-  - master     # test the gh-pages branch
-  - /pages-(.*)/ # test every branch which starts with "pages-"
-
+  - master
+  - "/pages-(.*)/"
 env:
   global:
-  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true # speeds up installation of html-proofer
-
-sudo: false # route your build to the container-based infrastructure for a faster build
-
+  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
+sudo: false
+after_success:
+- provider: script
+  skip_cleanup: true
+  script: scp -r _site/ $DEPLOY_USER@$WEB_SERVER:public_html/
 cache: bundler
+dd:
+- openssl aes-256-cbc -K $encrypted_31e1a3776c11_key -iv $encrypted_31e1a3776c11_iv
+  -in deploy_rsa.enc -out deploy_rsa -d
