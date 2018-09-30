@@ -5,6 +5,73 @@ date:   2018-09-27 18:08:55 -0700
 categories: jekyll update
 ---
 
+#### Problem 8.1
+Design a stack that supports a max operation. Time complexity must be O(1), memory complexity O(n).
+
+**Solution**
+
+Use a second stack to keep track of the maximum value, operate on it when operating on the other stack. Since stacks have O(1) time complexity, two stacks will still have O(1) time complexity. 
+
+{% highlight scala %}
+class MaxStack[T <% Ordered[T]] {
+  val stack = scala.collection.mutable.Stack[T]()
+  val maxStack = scala.collection.mutable.Stack[T]()
+
+  def push(value: T): Unit = {
+    stack.push(value)
+    if(maxStack.isEmpty){
+      maxStack.push(value)
+    } else if(maxStack.top <= value){
+      maxStack.push(value)
+    }
+  }
+
+  def pop(): T = {
+    if(stack.isEmpty){
+      throw new RuntimeException("Called pop on an empty stack")
+    }
+
+    val popped = stack.pop()
+    if(maxStack.top == popped){
+      maxStack.pop()
+    }
+    popped
+  }
+
+  def max: T = {
+    if(maxStack.isEmpty){
+      throw new RuntimeException("The maximum of an empty stack is not defined!")
+    }
+    maxStack.top
+  }
+}
+
+object MaxStackTest {
+  val testStack = new MaxStack[Int]
+
+  def main(args: Array[String]): Unit = {
+    testStack.push(1)
+    testStack.push(2)
+    assert(testStack.max == 2)
+    testStack.push(3)
+    testStack.push(4)
+    testStack.push(4)
+    testStack.push(3)
+    assert(testStack.max == 4)
+    testStack.pop()
+    assert(testStack.max == 4)
+    testStack.pop()
+    testStack.pop()
+    assert(testStack.max == 3)
+    testStack.pop()
+    assert(testStack.max == 2)
+    testStack.pop()
+    assert(testStack.max == 1)
+    testStack.pop()
+  }
+}
+{% endhighlight %}
+
 #### Problem 8.2
 Write a function that takes an arithmetic expression in Reverse Polish Notation and evaluates it.
 
