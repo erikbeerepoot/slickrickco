@@ -119,3 +119,121 @@ object ReversePolishNotation {
   }
 }
 {% endhighlight %}	
+
+
+#### Problem 8.5 
+Write a function that lists a sequence of operations to solve the Tower of Hanoi. Manual working of the solution below. For convenience, I've labelled the rings with a number. The constraint that we can't put a larger ring on a smaller ring can than easily be expressed numerically.
+
+```
+1
+2
+3
+4
+5
+6 . . 
+
+2
+3
+4
+5
+6 1 .                   
+1 operation 
+
+2   
+3    3        3
+4        4      4
+5      5        5   1
+6 1 . -> 6 1 2 -> 6 . 2         
+2 operations
+
+
+                                    1        1
+3                          2        2        2        2
+4        4        4        4        4        4        4        4        4   1
+5   1    5   1    5 1      5 1      5        5        5        5   2    5   2
+6 . 2 -> 6 3 2 -> 6 3 2 -> 6 3 . -> 6 3 . -> 6 . 3 -> 6 1 3 -> 6 1 3 -> 6 . 3 
+ 
+3         1        1
+4      4        4        4        4 1
+5   1    5   1    5        5 2      5 2 
+6 . 2 -> 6 3 2 -> 6 3 2 -> 6 3 . -> 6 3 .
+4 operations 
+
+                    1        1                 1 
+4 1        1               2        2        2         2            2        2 
+5 2    5 2      5 2 1    5   1    5        5   3     5   3    5   3    5   3 
+6 3 . -> 6 3 4 -> 6 3 4 -> 6 3 4 -> 6 3 4 -> 6 . 4  -> 6 1 4 -> 6 1 4 -> 6 . 4    
+8 operations  
+
+    1        1                                                          1        1
+    2        2        2               1        1               2        2        2        2 1
+5   3        3    1   3    1 2 3      2 3    3 2      3 2 1    3   1    3        3 4      3 4 
+6 . 4 -> 6 5 4 -> 6 5 4 -> 6 5 4 -> 6 5 4 -> 6 5 4 -> 6 5 4 -> 6 5 4 -> 6 5 4 -> 6 5 . -> 6 5 . -> 
+
+                                               1
+                                      2        2
+  1                 3        3        3        3
+3 4      3 4 1      4 1    1 4      1 4        4
+6 5 2 -> 6 5 2 -> 6 5 2 -> 6 5 2 -> 6 5 . -> 6 5 .
+16 operations
+etc.
+
+
+```
+
+The solution is:
+1. Recursively transfer n - 1 rings from P1 to P3 using P2.
+2. Transfer ring n - 1 from P1 to P2 
+3. Recursively transfer n - 1 rings from P3 to P2 using P1.
+
+
+In code:
+{% highlight scala %}
+object TowersOfHanoiTest {
+  def main(args: Array[String]): Unit = {
+    val towers = new TowersOfHanoi(6)
+    towers.solve()
+  }
+}
+
+class TowersOfHanoi(numberOfRings: Int) {
+  val pegs = List[scala.collection.mutable.Stack[Int]](
+    scala.collection.mutable.Stack[Int](),
+    scala.collection.mutable.Stack[Int](),
+    scala.collection.mutable.Stack[Int]()
+  )
+
+  def initialize: Unit = {
+    (0 to 2).foreach(peg => pegs(peg).clear())
+    (6 to 1 by -1).foreach(num => pegs(0).push(num))
+  }
+
+  def solve(): Unit = {
+    initialize
+    transfer(numberOfRings,0,1,2)
+  }
+
+  def transfer(n: Int, from: Int, to: Int, use: Int){
+    print()
+    if(n > 0){
+      transfer(n - 1, from, use, to)
+      moveRing(from,to)
+      transfer(n - 1, use, to, from)
+    }
+  }
+
+  def moveRing(from: Int, to: Int){
+    val popped = pegs(from).pop()
+    pegs(to).push(popped)
+  }
+
+  def print(): Unit = {
+    println(pegs(0).toString)
+    println(pegs(1).toString)
+    println(pegs(2).toString)
+    println("-----------")
+  }
+}
+{% endhighlight %}  
+
+
