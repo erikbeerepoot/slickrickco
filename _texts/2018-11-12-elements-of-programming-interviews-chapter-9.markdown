@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Elements of Programming Interviews in Scala (Chapter 8)"
-date:   2018-09-27 18:08:55 -0700
+title:  "Elements of Programming Interviews in Scala (Chapter 9)"
+date:   2018-11-12 11:00:00 -0700
 categories: jekyll update
 --- 
 
@@ -84,5 +84,5 @@ object App {
 sealed trait Tree
 case class Node(var left: Option[Node], var right: Option[Node]) extends Tree
 
-% endhighlight %}
+{% endhighlight %}
 
