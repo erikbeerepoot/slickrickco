@@ -50,6 +50,10 @@
     {% endif %}
   </title>
 
+  {% if page.use_math %}
+    {% include mathjax_support %}
+  {% endif %}
+
   <!-- CSS link -->
   <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/style.css"/>
  
