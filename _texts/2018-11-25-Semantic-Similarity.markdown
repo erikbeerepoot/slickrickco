@@ -10,8 +10,8 @@ use_math: true
 
 A common problem I'm faced with in my day-to-day life is that of knowledge retrieval. A specific question arises, and the answer resides somwhere 
 in a knowledge repository. If this repository happens to be indexed by Google, the solution is simple: type a query into the google search bar.
-However, there are many repositories that are not indexed by google: My personal email, various knowledge bases I use daily \\(e.g. Confluence, 
-Stack Overflow\\). Typically, the search functionality provided by these tools leave much to be desired.
+However, there are many repositories that are not indexed by google: My personal email, various knowledge bases I use daily (e.g. Confluence, 
+Stack Overflow). Typically, the search functionality provided by these tools leave much to be desired.
 
 Furthermore, websites like Stack Overflow often suffer from a large number of duplicate questions, along with a large of number of duplicate answers -
 and often links between them. Assuming innocent motivations, it seems probable that people don't post duplicate questions because they like annoying 
@@ -39,7 +39,7 @@ the relatively simple approach:
 
  $$g(h^{(a)}_{T_a},h^{(b)}_{T_b}) = e^{(-\lVert{h^{(a)}_{T_a} - h^{(b)}_{T_b}}\rVert_{1})}$$)
 
- - The authors use pre-trained word embeddings \\(word2vec\\) as input.
+ - The authors use pre-trained word embeddings (word2vec) as input.
  - The model weights are initialized to random gaussian values.
  - Finally, the model is pre-trained on the SICK dataset and trained on the Quora question answering dataset.
  - The authors use the AdaDelta optimizer to train the model & employ early stopping.
@@ -80,7 +80,7 @@ model = Model(inputs=[left_input, right_input], outputs=[malstm_distance])
 {% endhighlight %}
 
 One thing to note is that the Keras optimizers are not capable of sparse gradient upddates, so we fall back to a TensorFlow optimizer. This is important because
-backprop on dense matrices incurs a large performance penality. We also choose to use Stochastic Gradient Descent \\(for now\\):
+backprop on dense matrices incurs a large performance penality. We also choose to use Stochastic Gradient Descent (for now):
 
 {% highlight python %}
 
@@ -109,9 +109,8 @@ print("Training time finished.\n{} epochs in {}".format(num_epoch, datetime.time
 ### Training
 
 The full notebook can be found on [github](https://github.com/erikbeerepoot/machine-learning/blob/master/notebooks/semantic-similarity/Manhattan-LSTM.ipynb). The notebook along
-with the pre-trained word vectors was copied to an AWS EC2 p2.large instance, and run in a `tensorflow_p36` virtuelenv.
+with the pre-trained word vectors was copied to an AWS EC2 p2.large instance, and run in a `tensorflow_p36` virtuelenv. Training progress:
 
-Results:
 
 ```
 Train on 364290 samples, validate on 40000 samples
@@ -135,10 +134,53 @@ Epoch 9/10
 364290/364290 [==============================] - 777s 2ms/step - loss: 0.0857 - acc: 0.9012 - val_loss: 0.1258 - val_acc: 0.8287
 Epoch 10/10
 364290/364290 [==============================] - 776s 2ms/step - loss: 0.0845 - acc: 0.9028 - val_loss: 0.1255 - val_acc: 0.8296
-Training time finished.
+Training finished.
 10 epochs in 2:09:03.967721
 ```
 
 The main thing to note about the above results is the gap in accuracy between the training set and the validation set. This is typically 
-and indication of overfitting \(high variance\).
+and indication of overfitting (high variance). Hence, we should expect that questions from (or similar to) the questions in the dataset
+will yield good predictions, but the model won't generalize well. We ran a simple qualitative experiment:
 
+{% highlight python %}
+
+import numpy as np
+
+# q1 -> q3 are from the WikiAnswers corpus
+q1 = "Are fats and oils constructed from glycerol and fatty acids?"
+q2 = "What are the countries in which the islam worshippers live today?"
+q3 = "What produces glycerol for fatty acid synthesis?"
+# q4 -> q6 are from the Quora corpus
+q4 = "What are some of the best romantic movies in English"
+q5 = "What is the best way to learn c programming?"
+q6 = "What is the best romantic movie you have ever seen"
+
+q1_sequence = process_sentence(q1)
+q2_sequence = process_sentence(q2)
+q3_sequence = process_sentence(q3)
+q4_sequence = process_sentence(q4)
+q5_sequence = process_sentence(q5)
+q6_sequence = process_sentence(q6)
+
+[p1, p2, p3, p4, p5, p6] = pad_sequences(
+    [q1_sequence, q2_sequence, q3_sequence, q4_sequence, q5_sequence, q6_sequence], len(X_train['left'][0])
+)
+sequence_1 = np.array([p1, p5, p3, p4, p5, p6])
+sequence_2 = np.array([p3, p1, p2, p6, p5, p2])
+
+model.predict( [sequence_1, sequence_2], verbose = 1)
+
+{% endhighlight %}
+
+with the output:
+
+```
+array([[0.14649092],
+       [0.01732459],
+       [0.07154535],
+       [0.7385108 ],
+       [1.        ],
+       [0.22897404]], dtype=float32)
+```
+
+This simple experiment confirms our suspicions: the model does not generalize well. In the next post, we will look at how we can improve these results.
