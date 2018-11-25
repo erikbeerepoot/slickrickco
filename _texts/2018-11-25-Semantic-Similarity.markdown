@@ -10,8 +10,8 @@ use_math: true
 
 A common problem I'm faced with in my day-to-day life is that of knowledge retrieval. A specific question arises, and the answer resides somwhere 
 in a knowledge repository. If this repository happens to be indexed by Google, the solution is simple: type a query into the google search bar.
-However, there are many repositories that are not indexed by google: My personal email, various knowledge bases I use daily (e.g. Confluence), 
-Stack Overflow, etc. Typically, the search functionality provided by these tools leave much to be desired.
+However, there are many repositories that are not indexed by google: My personal email, various knowledge bases I use daily \\(e.g. Confluence, 
+Stack Overflow\\). Typically, the search functionality provided by these tools leave much to be desired.
 
 Furthermore, websites like Stack Overflow often suffer from a large number of duplicate questions, along with a large of number of duplicate answers -
 and often links between them. Assuming innocent motivations, it seems probable that people don't post duplicate questions because they like annoying 
@@ -36,8 +36,10 @@ As I pointed out above, the Manhattan LSTM model is a simple way to get started.
 the relatively simple approach:
 - The model is a "Siamese LSMT." There are two LSTMs, termed $LSTM_a$ and $LSTM_b$, with the weights being the same between them.
 - The cost function is the negative exponent of the $l_1$ norm of the LSTM outputs:
+
  $$g(h^{(a)}_{T_a},h^{(b)}_{T_b}) = e^{(-\lVert{h^{(a)}_{T_a} - h^{(b)}_{T_b}}\rVert_{1})}$$)
- - The authors use pre-trained word embeddings (word2vec) as input.
+
+ - The authors use pre-trained word embeddings \\(word2vec\\) as input.
  - The model weights are initialized to random gaussian values.
  - Finally, the model is pre-trained on the SICK dataset and trained on the Quora question answering dataset.
  - The authors use the AdaDelta optimizer to train the model & employ early stopping.
@@ -78,7 +80,7 @@ model = Model(inputs=[left_input, right_input], outputs=[malstm_distance])
 {% endhighlight %}
 
 One thing to note is that the Keras optimizers are not capable of sparse gradient upddates, so we fall back to a TensorFlow optimizer. This is important because
-backprop on dense matrices incurs a large performance penality. We also choose to use Stochastic Gradient Descent (for now):
+backprop on dense matrices incurs a large performance penality. We also choose to use Stochastic Gradient Descent \\(for now\\):
 
 {% highlight python %}
 
@@ -138,5 +140,5 @@ Training time finished.
 ```
 
 The main thing to note about the above results is the gap in accuracy between the training set and the validation set. This is typically 
-and indication of overfitting (high variance).
+and indication of overfitting \(high variance\).
 
