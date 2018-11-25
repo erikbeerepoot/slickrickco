@@ -64,7 +64,13 @@ n_hidden_units = 32;
 left_input = Input(shape=(max_question_length,), dtype='int32')
 right_input = Input(shape=(max_question_length,), dtype='int32')
 
-embedding_layer = Embedding(len(embeddings), embedding_dim, input_length=max_question_length)
+embedding_layer = Embedding(
+    len(embeddings), 
+    embedding_dim, 
+    input_length=max_question_length,
+    weights = [embeddings],
+    trainable = False,
+)
 embedded_left = embedding_layer(left_input)
 embedded_right = embedding_layer(right_input)
 
