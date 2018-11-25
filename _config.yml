@@ -30,7 +30,7 @@ collections:
     output: true
 
 # Markdown specs
-markdown: maruku
+markdown: Kramdown
 
 kramdown:
   auto_ids:       true
