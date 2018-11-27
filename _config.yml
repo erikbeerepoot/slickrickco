@@ -46,4 +46,4 @@ exclude:
 # Theme
 theme: "academic"
 
-
+highlighter: rouge

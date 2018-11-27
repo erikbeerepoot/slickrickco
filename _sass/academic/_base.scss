@@ -203,7 +203,12 @@ blockquote {
  * Code formatting
  */
 
-p code,
+code {
+  text-align: left;
+  display: block;
+}
+p code {
+}
 li code {
   @include size(vsmall);
 }
