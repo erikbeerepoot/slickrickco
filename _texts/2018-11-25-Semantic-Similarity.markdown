@@ -34,8 +34,8 @@ There are a few reasons why this is a nice problem to solve with Machine Learnin
 
 As I pointed out above, the Manhattan LSTM model is a simple way to get started. The [paper](https://www.aaai.org/ocs/index.php/AAAI/AAAI16/paper/download/12195/12023) explains 
 the relatively simple approach:
-- The model is a "Siamese LSMT." There are two LSTMs, termed $LSTM_a$ and $LSTM_b$, with the weights being the same between them.
-- The cost function is the negative exponent of the $l_1$ norm of the LSTM outputs:
+- The model is a "Siamese LSMT." There are two LSTMs, termed $$LSTM_a$$ and $$LSTM_b$$, with the weights being the same between them.
+- The cost function is the negative exponent of the $$l_1$$ norm of the LSTM outputs:
 
  $$g(h^{(a)}_{T_a},h^{(b)}_{T_b}) = e^{(-\lVert{h^{(a)}_{T_a} - h^{(b)}_{T_b}}\rVert_{1})}$$)
 
