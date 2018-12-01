@@ -8,17 +8,19 @@ use_math: true
 
 ### Introduction 
 
-One important aspect of software development is the ability to do one-step builds. One-step builds are builds that deploy your application along with all 
-the necessary infrastructure without user intervention, other than the initial action taken to start the process. This confers some important benefits:
-- Repeatability: Your application environment is always the same, which means your application has the necessary components to run, and you have a known state 
-  you can use a start for debugging.
-- Ease of testing: You can easily deploy a new instance of your service or application in a staging environment for testing.
+
+Being able to reproduce an environment - be it an application runtime environment, a testing environment or build environment - has
+some important benefits:
+
+- Repeatability: Your environment is always the same, which means your application has the necessary components to run, and you have a known state 
+  you can use a start for debugging or development.
+- Reproducability: You can easily deploy a new instance of your service or application.
 - Ease of deployment: The deployment process is simple and leaves little room for error.
 - Bootstrapping latency: It's quick to get up and running - even a complex deployment process is going to faster when steps don't have to be taken manually
 - Completeness: Manually configuring your environment invites the tendency to cut corners; since every step takes a bit longer, you can speed up the process by
   leaving some steps out.
 
-In this post, we're going to automate the creation & configuration of an EC2 deep learning instance, with the following end state:
+These benefits also apply for deployment of ec2 training instances. In this post, we're going to automate the creation & configuration of an EC2 deep learning instance, with the following end state:
 - Have a running P2 deep learning EC2 instance
 - A configured Jupyter notebook server running in the background
 - Jupyter plugin configurator & a set of base plugins installed
@@ -44,10 +46,10 @@ pip install ansible
 
 ### Creating the terraform configuration 
 It's good security practice to [create an IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html) to limit the scope of your credentials in AWS. 
-Follow the necessary steps to accomplis that, and take note of the Access ID and Access Key. Alternatively, you can have Terraform rely on your credentials in `~/.aws/credentials`.
+Follow the necessary steps to accomplish that, and take note of the Access ID and Access Key. Alternatively, you can have Terraform rely on your credentials in `~/.aws/credentials`.
 First, define the provider block:
 
-{% highlight yaml  %}
+{% highlight terraform  %}
 
 # Configure the AWS Provider
 
@@ -61,12 +63,11 @@ provider "aws" {
 
 Next, let's define some security rules in a security group:
 
-{% highlight yaml  %}
+{% highlight terraform  %}
 {% raw %}
-
-resource "aws_security_group" "allow_ssh" {
-  name        = "allow_ssh"
-  description = "allows ingress of ssh traffic"
+resource "aws_security_group" "allow_ssh_and_ephemeral_ports" {
+  name        = "allow_ssh_and_ephemeral_ports"
+  description = "allows ingress of ssh traffic and ephemeral ports "
 
   ingress {
     from_port = 22
@@ -94,21 +95,21 @@ resource "aws_security_group" "allow_ssh" {
 {% endraw %}
 {% endhighlight %}
 
-Here, we're allowing `ssh` ingress, since we can easily tunnel Jupyter over ssh. Furthermore, the ansible provisioner will also leverage ssh to peform the configuration changes. We also allow
-ingress on the ephemeral ports, so we can use pip/conda/apt-get.
+Here, we're allowing both ephemeral ingress and ssh ingress. The former will allow us to use pip to install additional packages, the latter will allow us to login and provision the instance.
 
 Now, we create a configuration template for the deep learning EC2 instance we're going to create:
 
-{% highlight yaml  %}
+{% highlight terraform  %}
 resource "aws_instance" "deep-learning" {
   ami           = "ami-0688c8f24f1c0e235"
-  instance_type = "p3.2xlarge"
-  security_groups = ["allow_ssh"]
+  instance_type = "p2.xlarge"
+  key_name      = "erik-deep-learning"	
+  security_groups = ["allow_ssh_and_ephemeral_ports"]
 }
 {% endhighlight %}
 
-We've chosen the `p3.2xlarge` instance type here, but you can change this to an instance type of your choosing. Note the referencing of the `allow_ssh` security group, this is necessary 
-to configure the instance to use it.
+We've chosen the `p2.xlarge` instance type here, but you can change this to an instance type of your choosing (note that AWS limits may apply). Note the reference to the `allow_ssh` security group, this is necessary 
+to configure the instance to use it. Further note that `key_name` must refer to a pre-existing key pair. You can create it in your credentials dashboard.
 
 Next, run:
 
