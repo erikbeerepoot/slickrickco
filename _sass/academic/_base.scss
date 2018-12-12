@@ -46,6 +46,7 @@ ul, ol, dl, figure,
 
 h1, h2, h3, h4, h5, h6,
 %vertical-rhythm {
+  margin-bottom: $spacing-unit / 5;
   margin-top: $spacing-unit;
 }
 
@@ -77,7 +78,6 @@ h1 + h3, h1 + h4, h2 + h4 {
 // }
 
 figure {
-  text-align: left;
 
   figcaption {
     margin-top: 5px;
@@ -95,6 +95,7 @@ img {
  * Figures
  */
 figure > img {
+  
   display: block;
 }
 
@@ -215,9 +216,9 @@ li code {
 
 pre {
   display: block;
-  padding-top: $spacing-unit / 3;
-  padding-bottom: $spacing-unit / 3;
-  padding-left: 10px;
+  margin-top: $spacing-unit / 5;
+  margin-bottom: 0;
+  margin-left: 10px;
   overflow-x: auto;
   @include size(vsmall);
 }

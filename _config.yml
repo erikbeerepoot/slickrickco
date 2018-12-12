@@ -60,11 +60,12 @@ exclude:
 # Theme
 theme: "academic"
 
-kramdown:
-  input:          GFM
-  # https://github.com/jekyll/jekyll/pull/4090
-  
+
+scholar:
+  style: apa
+
 start_line: 1
 
 plugins:
         - jekyll-feed
+        - jekyll-scholar

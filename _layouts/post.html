@@ -2,7 +2,6 @@
 layout: default
 ---
 <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-
   {% if page.thumbnail %}
   <header class="post-header with-thumbnail">
   {% else %}
@@ -30,6 +29,14 @@ layout: default
     {{ content }}
   </div>
 
+  <!-- span>[
+    {% for tag in page.tags %}
+      {% capture tag_name %}{{ tag }}{% endcapture %}
+      <a href="/tag/{{ tag_name }}"><code class="highligher-rouge"><nobr>{{ tag_name }}</nobr></code>&nbsp;</a>
+    {% endfor %}
+  ]</span -->
+
+
   {% include calltoaction.html %}
 
   {% if site.shortbio %}
@@ -47,5 +54,6 @@ layout: default
       </ul>
   </div>
   {% endif %}
+
 
 </article>
