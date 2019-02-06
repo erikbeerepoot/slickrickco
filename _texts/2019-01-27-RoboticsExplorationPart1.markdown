@@ -63,7 +63,7 @@ As you can see from the pictures, the inside piece of acrylic is taller, allowin
 
 ### Electronics 
 
-To facilitate quick prototyping, the project was started by using an STM32F4 Nucleo board by ST. These boards are cheap, available at many electronics retailers (including [Digikey](https://digikey.com)) and come with a built-in ST-Link in-circuit programmer. Combined with the large amount of broken-out I/O pins make this an ideal starting point.
+To facilitate quick prototyping, the project was started by using an STM32F4 Nucleo board by ST. These boards are cheap, available at many electronics retailers (including [Digikey](https://digikey.com)) and come with a built-in ST-Link in-circuit programmer. Combined with the large amount of broken-out I/O pins make this an ideal starting point. After proving out the various components the circuit board below was designed and manufactured:
 
 <figure>
   <img src="/assets/robot/robot-v1-schematic.png" style="width:100%"/> <br>
@@ -80,10 +80,24 @@ To facilitate quick prototyping, the project was started by using an STM32F4 Nuc
   <figcaption>Finished circuit board (bottom view).</figcaption>
 </figure>
 
+A few notes about the board:
 
+- As a first iteration, there are a couple of mistakes and omissions. I expect to address these in a future revision of the board. Some obvious ones:
+  - An error was made in the 3.3V supply due to an unconnected net.
+  - No diodes on the power supply inputs.
+  - RX/TX reversed on bluetooth connection.
+  - No timer peripheral available for input capture on one of the encoder channels.
+  - No level shifting for the LD293 (though still working).
+  - No USB connection for the laser - necessary due to non-functional RS232 port.
+  - Roughly broken out connections for some external components like IMU, Flash and RAM.
+      + FLASH and/or RAM will be onboard in a future revision, but IMU will likely maintain external due to the package.
+- The board is based on the STM32F4xxx series, albeit a lower clocked variant.
+- The bluetooth transceiver (RN41), while capable, has rather limited throughput in practice.
+- For quick (manual) routing, the board was produced as a larger 2-layer version. I will likely move to 4 layers in the future.
 
+### Conclusion 
 
-
+I've provided a short overview of the robotics platform and the various components. Over the next few posts, I hope to explore the software & algorithms used with the robot.
 
 
 
