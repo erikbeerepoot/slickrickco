@@ -5,6 +5,7 @@ gem 'redcarpet'
 gem 'jekyll-feed'
 gem 'jekyll-scholar'
 gem 'unicode'
+gem 'hyde'
 
 group :jekyll_plugins do
   gem 'jekyll-livereload'

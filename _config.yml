@@ -58,7 +58,7 @@ exclude:
   - vendor
 
 # Theme
-theme: "academic"
+theme: "hyde"
 
 
 scholar:
